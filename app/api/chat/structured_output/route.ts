@@ -6,7 +6,7 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { JsonOutputFunctionsParser } from "langchain/output_parsers";
-import { ChatOllama } from "@langchain/community/chat_models/ollama";
+import { OllamaFunctions } from "langchain/experimental/chat_models/ollama_functions";
 
 export const runtime = "edge";
 
@@ -34,10 +34,16 @@ export async function POST(req: NextRequest) {
     /**
      * Function calling is currently only supported with ChatOpenAI models
      */
-    const model = new ChatOpenAI({
-      temperature: 0.8,
-      modelName: "gpt-3.5-turbo-1106",
-      apiKey: process.env.OPENAI_API_KEY,
+    // const model = new ChatOpenAI({
+    //   temperature: 0.8,
+    //   modelName: "gpt-3.5-turbo-1106",
+    //   apiKey: process.env.OPENAI_API_KEY,
+    // });
+
+    //experimental
+    const model = new OllamaFunctions({
+      model: "llama3",
+      baseUrl:"http://localhost:11434"
     });
 
     /**
