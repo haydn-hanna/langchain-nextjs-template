@@ -34,17 +34,20 @@ export async function POST(req: NextRequest) {
     /**
      * Function calling is currently only supported with ChatOpenAI models
      */
-    // const model = new ChatOpenAI({
-    //   temperature: 0.8,
-    //   modelName: "gpt-3.5-turbo-1106",
-    //   apiKey: process.env.OPENAI_API_KEY,
-    // });
+    const OpenAIModel = new ChatOpenAI({
+      temperature: 0.8,
+      modelName: "gpt-3.5-turbo-1106",
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     //experimental
-    const model = new OllamaFunctions({
+    const Llama3 = new OllamaFunctions({
       model: "llama3",
       baseUrl:"http://localhost:11434"
     });
+
+
+    const models = [OpenAIModel, Llama3];
 
     /**
      * We use Zod (https://zod.dev) to define our schema for convenience,
@@ -69,11 +72,11 @@ export async function POST(req: NextRequest) {
      * Specifying "function_call" ensures that the provided function will always
      * be called by the model.
      */
-    const functionCallingModel = model.bind({
+    const functionCallingModel = Llama3.bind({
       functions: [
         {
           name: "output_formatter",
-          description: "Should always be used to properly format output",
+          description: "Should sometimes be used to properly format output",
           parameters: zodToJsonSchema(schema),
         },
       ],
@@ -85,7 +88,7 @@ export async function POST(req: NextRequest) {
      */
     const chain = prompt
       .pipe(functionCallingModel)
-      .pipe(new JsonOutputFunctionsParser());
+      .pipe(new JsonOutputFunctionsParser())
 
     const result = await chain.invoke({
       input: currentMessageContent,
