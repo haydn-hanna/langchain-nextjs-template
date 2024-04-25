@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { Message as VercelChatMessage, StreamingTextResponse } from "ai";
 
 import { ChatOpenAI } from "@langchain/openai";
+import {ChatOllama} from "@langchain/community/chat_models/ollama";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { HttpResponseOutputParser } from "langchain/output_parsers";
+
 
 export const runtime = "edge";
 
@@ -42,9 +44,14 @@ export async function POST(req: NextRequest) {
      * See a full list of supported models at:
      * https://js.langchain.com/docs/modules/model_io/models/
      */
-    const model = new ChatOpenAI({
-      temperature: 0.8,
-      modelName: "gpt-3.5-turbo-1106",
+    // const model = new ChatOpenAI({
+    //   temperature: 0.8,
+    //   modelName: "gpt-3.5-turbo-1106",
+    // });
+
+    const model = new ChatOllama({
+      model: "llama3",
+      baseUrl:"http://localhost:11434"
     });
 
     /**
