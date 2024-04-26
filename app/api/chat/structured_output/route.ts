@@ -7,7 +7,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { JsonOutputFunctionsParser } from "langchain/output_parsers";
 import { OllamaFunctions } from "langchain/experimental/chat_models/ollama_functions";
-
+import { HumanMessage } from "@langchain/core/messages";
 export const runtime = "edge";
 
 const TEMPLATE = `Extract the requested fields from the input.
